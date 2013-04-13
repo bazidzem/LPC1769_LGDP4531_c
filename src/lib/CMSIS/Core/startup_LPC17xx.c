@@ -225,12 +225,9 @@ void Reset_Handler(void)
 {
    unsigned long *pulSrc, *pulDest;
 
-   /* Initialize the System */
-   SystemInit();
-
    /* Copy the data segment initializers from flash to SRAM in ROM mode */
-   pulSrc = &_etext;
-   for (pulDest = &_sidata; pulDest < &_edata;)
+   pulSrc = &_sidata;
+   for (pulDest = &_sdata; pulDest < &_edata;)
    {
       *(pulDest++) = *(pulSrc++);
    }
@@ -247,6 +244,9 @@ void Reset_Handler(void)
    {
       *(pulDest++) = *(pulSrc++);
    }
+
+   /* Initialize the System */
+   SystemInit();
 
    /* Call the application's entry point */
    main();
