@@ -51,7 +51,7 @@ C_COMMONFLAGS = \
                 -gdwarf-2 \
                 -O0 \
                 -fpromote-loop-indices \
-#                -mhard-float \
+                -msoft-float \
                 -Wall \
                 -Wextra \
                 -Wimplicit \
@@ -69,9 +69,9 @@ C_COMMONFLAGS = \
 # -Wnested-externs                 # Warn if an extern declaration is encountered within a function
 # -std=gnu99                       # Defined standard: c99 plus GCC extensions
 CFLAGS = \
-			$(C_COMMONFLAGS) \
-			-Wnested-externs \
-         -std=gnu99
+		$(C_COMMONFLAGS) \
+		-Wnested-externs \
+		-std=gnu99
 
 # C++ only compiler flags
 # -fno-rtti -fno-exceptions        # If you will not use virtual functions 

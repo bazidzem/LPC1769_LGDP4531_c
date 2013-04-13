@@ -27,13 +27,12 @@ CSRCS =  $(sort \
 			system_LPC17xx.c \
 			syscalls.c \
 			startup_LPC17xx.c \
+			main.c \
+			SystemTick.c \
 			)
 
 # List C++ source files. File suffix must be *.cpp with case sensitive
 CPPSRCS = $(sort \
-			 main.cpp \
-			 lamp.cpp \
-			 SystemTick.cpp \
 			 )
 
 # List Assembler source files. File suffix must be *.s with case sensitive

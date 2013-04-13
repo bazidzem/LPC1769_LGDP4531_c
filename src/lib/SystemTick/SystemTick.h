@@ -13,78 +13,23 @@
 #include "inttypes.h"
 #include "LPC17xx.h"
 
+
 /**
- * SystemTick is used to handle SysTick counter in CM3
- * Class provides init, ISR handler, delay function.
+* Initializes Systick counter at fixed 1ms.
+* This method shall be called as soon as clocks are set.
+* @return non-zero if failed to initialize
+*/
+extern void SysTick_Init( void );
+
+/**
+ * Waits for delay_ms amount of time
+ * @param[in] delay_ms amount of miliseconds to wait
  */
-class SystemTick {
-   public:
-      /*****************************************************
-       * Constructors
-       *****************************************************/
-      /**
-       * Default empty construcor
-       */
-      SystemTick() { initialized = false; msTicks = 0;}
+extern void SysTick_Waitms( uint32_t delay_ms );
 
-      /**
-       * Initializes Systick counter at fixed 1ms. 
-       * This method shall be called as soon as clocks are set.
-       * @return non-zero if failed to initialize
-       */
-      int initialize();
+/**
+ * ISR inline Handler increments counter necessary in wait()
+ * Shall be called inside usual ISR handler
+ */
+extern void SysTick_Handler( void );
 
-      /*****************************************************
-       * Functions: modifiers (set), selectors (get)
-       *****************************************************/
-
-      /*****************************************************
-       * Iterators
-       *****************************************************/
-
-      /*****************************************************
-       * Other Functions
-       *****************************************************/
-
-      /**
-       * Waits for delay_ms amount of time
-       * @param[in] delay_ms amount of miliseconds to wait
-       */
-      __INLINE static void wait_ms(uint32_t delay_ms) {
-         if (initialized) {
-            uint32_t curTicks;
-            curTicks = msTicks;
-            while ((msTicks - curTicks) < delay_ms) {}
-         }
-      }
-
-      /**
-       * ISR inline Handler increments counter necessary in wait()
-       * Shall be called inside usual ISR handler
-       */
-      __INLINE static void SysTick_Handler(void) { msTicks++;}
-
-      /*****************************************************
-       * Public attributes
-       *****************************************************/
-
-   protected:
-      /*****************************************************
-       * Protected functions
-       *****************************************************/
-
-      /*****************************************************
-       * Protected attributes
-       *****************************************************/
-
-   private:
-      /*****************************************************
-       * Private functions
-       *****************************************************/
-
-      /*****************************************************
-       * Private attributes
-       *****************************************************/
-      static volatile uint32_t msTicks; /**< counts 1ms timeTicks */
-      static bool initialized; /**< whether SysTick was initialized or not*/
-};

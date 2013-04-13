@@ -13,6 +13,7 @@
 #include "inttypes.h"
 #include "LPC17xx.h"
 
+#if 0
 /******************************************************************************
  * Forward declarations
  *****************************************************************************/
@@ -103,3 +104,4 @@ class Lamp {
       bool _inverted; /**< Whether a lamp is inverted. */
       uint32_t on_mask;
 };
+#endif
