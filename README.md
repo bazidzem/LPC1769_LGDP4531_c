@@ -12,9 +12,6 @@ We defined project structure as follows:
 ./
 |- makefile            - makefile
 |- LPC1769.ld          - linker script
-|- doxyfile            - doxygen configuration file
-|- ChangeLog.md        - change log
-|- COPYING             - copying rights
 |- INSTALL.md          - install information
 |- README.md           - this file
 |- THANKS              - special thanks for support
@@ -31,7 +28,7 @@ We defined project structure as follows:
   |                       should be treated as a library because here you define behaviour and internal operations,
   |                       and the actual usage is in application. The same can be with other more sophisticated
   |                       libraries like USB stack, TCPIP stack and so on.
-  `- app/*             - application files like main.cpp. Also other files may be created here like
+  `- app/*             - application files like main.c. Also other files may be created here like
                           for e.g. application layer for USB or other features. In this folder you can
                           also create subfolders if for e.g. application layer for feature contains more than 1 file.
 </pre>

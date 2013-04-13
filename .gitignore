@@ -1,0 +1,7 @@
+release/*
+*.sub
+.cproject
+.project
+doc/*
+.settings/
+*.vim
