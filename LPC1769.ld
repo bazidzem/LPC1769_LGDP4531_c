@@ -109,7 +109,7 @@ SECTIONS
   .ARM.exidx :
   {
     *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-  } >rom
+  } >ROM
   __exidx_end = .;
   
   /* Interrupt area */
@@ -145,10 +145,10 @@ SECTIONS
      * >ram1 AT>rom - the VMA(Virtual Memory Address) is in ram1, the LMA(Load Memory Address) is in rom
      * This feature is designed to make it easy to build a ROM image 
      */
-  } >ram1 AT>rom
+  } >RAM1 AT>ROM
 
   /* These section hold initialized data that contribute to the program's memory image */
-  . = ORIGIN(ram1);
+  . = ORIGIN(RAM1);
   .data :
   {
     /* Provide to the code start of address for the initialization values */
@@ -179,7 +179,7 @@ SECTIONS
      * >ram1 AT>rom - the VMA(Virtual Memory Address) is in ram1, the LMA(Load Memory Address) is in rom
      * This feature is designed to make it easy to build a ROM image 
      */    
-  } >ram1 AT>rom
+  } >RAM1 AT>ROM
   
   /* 
    * This section holds data that contributes to the program's memory image. 
@@ -227,7 +227,7 @@ SECTIONS
 
 
   /* These section hold initialized data that contribute to the program's memory image */
-  . = ORIGIN(ram2);
+  . = ORIGIN(RAM2);
   .ram2 :
   {
     /* Provide to the code start of address for RAM2 */
@@ -241,7 +241,7 @@ SECTIONS
   } >RAM2
    
   /* These section hold initialized data that contribute to the program's memory image */
-  . = ORIGIN(ram3);
+  . = ORIGIN(RAM3);
   .ram3 :
   {
      /* Provide to the code start of address for RAM3 */

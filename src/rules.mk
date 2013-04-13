@@ -113,13 +113,7 @@ ASFLAGS = \
 # --cref                           # Output a cross reference table,
 # --gc-sections                    # Enable garbage collection of unused input sections
 # -T$(LINKERSCRIPT)                # Use this linker script
-LDFLAGS = \
-#          --warn-common \
-#          --warn-constructors \
-#          --warn-section-align \
-#          --warn-shared-textrel \
-#          --warn-alternate-em \
-          -mcpu=cortex-m3 \
+LDFLAGS = -mcpu=cortex-m3 \
           -mthumb \
           -Wl,-Map=$(OUTDIR)/$(TARGET).map,--cref,--gc-sections,-lc,-lgcc,-lstdc++,-lcs3,-lcs3unhosted,-lcs3arm \
           -T$(LINKERSCRIPT)

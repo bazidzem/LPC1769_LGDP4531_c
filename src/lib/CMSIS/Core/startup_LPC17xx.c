@@ -248,9 +248,6 @@ void Reset_Handler(void)
       *(pulDest++) = *(pulSrc++);
    }
 
-   /* Call CTORS of static objects */
-   __libc_init_array();
-
    /* Call the application's entry point */
    main();
 
