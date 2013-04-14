@@ -29,6 +29,7 @@ CSRCS =  $(sort \
 			startup_LPC17xx.c \
 			main.c \
 			SystemTick.c \
+			lamp.c \
 			)
 
 # List C++ source files. File suffix must be *.cpp with case sensitive

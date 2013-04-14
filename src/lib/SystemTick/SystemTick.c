@@ -42,7 +42,3 @@ void SysTick_Handler(void)
 {
 	msTicks++;
 }
-
-
-
-

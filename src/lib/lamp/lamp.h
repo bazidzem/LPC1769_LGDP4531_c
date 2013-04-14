@@ -13,95 +13,32 @@
 #include "inttypes.h"
 #include "LPC17xx.h"
 
-#if 0
-/******************************************************************************
- * Forward declarations
- *****************************************************************************/
-struct Pin
+
+
+typedef struct
 {
    volatile LPC_GPIO_TypeDef *port;
-   uint8_t                   pin; // which pin
-};
-
+   uint8_t                    pin; // which pin
+}Lamp;
 
 /**
- * Lamp provides abstraction for a lamp connected to uC.
+ * Function used for verifying if a lamp is on or not.
+ * @return true if lamp is on, false otherwise.
  */
-class Lamp {
-   public:
-      /*****************************************************
-       * Constructors
-       *****************************************************/
-      /**
-       * Default empty construcor
-       */
-      Lamp() {};
+uint8_t Lamp_IsON( Lamp *lamp );
 
-      /**
-       * Constructor allowing to assign a pin, change the initial state and specify if lamp logic is inverted or not.
-       * @param[in] Pin port and pin to which Lamp is connected.
-       * @param[in] initial_state false=lamp off(default), true=lamp on.
-       * @param[in] inverted false=lamp is ON by setting pin to "0", true=lamp is OFF by setting pin to "1".
-       */
-      Lamp(Pin &pin, bool initial_state = false , bool inverted = false );
+/**
+ * Turns the lamp on
+ */
+void Lamp_ON( Lamp *lamp );
 
-      /**
-       * Default destructor
-       */
-      ~Lamp() {};
+/**
+ * Turns the lamp off
+ */
+void Lamp_OFF( Lamp *lamp );
 
-      /*****************************************************
-       * Functions: modifiers (set), selectors (get)
-       *****************************************************/
-      /**
-       * Function used for verifying if a lamp is on or not.
-       * @return true if lamp is on, false otherwise.
-       */
-      bool is_on() {return ((_pin->port->FIOSET & (1 << _pin->pin)) > 0);}
+/**
+ * Toggles the lamp
+ */
+void Lamp_Toggle( Lamp *lamp );
 
-      /**
-       * Turns the lap on
-       */
-      void __INLINE on(void) {_pin->port->FIOSET = (_inverted << _pin->pin);}
-
-      /**
-       * Turns the lap off
-       */
-      void __INLINE off(void) {_pin->port->FIOCLR = (_inverted << _pin->pin);}
-
-      /**
-       * Toggles the lap
-       */
-      void __INLINE toggle(void) {_pin->port->FIOPIN ^= (1 << _pin->pin);}
-
-      /*****************************************************
-       * Iterators
-       *****************************************************/
-
-      /*****************************************************
-       * Public attributes
-       *****************************************************/
-
-   protected:
-      /*****************************************************
-       * Protected functions
-       *****************************************************/
-
-      /*****************************************************
-       * Protected attributes
-       *****************************************************/
-
-   private:
-      /*****************************************************
-       * Private functions
-       *****************************************************/
-
-      /*****************************************************
-       * Private attributes
-       *****************************************************/
-      Pin *_pin; /**< Microcontroler pin lamp is connected to. */
-      bool _is_on; /**< Whether a lamp is on. */
-      bool _inverted; /**< Whether a lamp is inverted. */
-      uint32_t on_mask;
-};
-#endif

@@ -54,21 +54,27 @@ int main(void)
 {
    enableCLKOUT();
 
-//   Pin p1_25 = {LPC_GPIO1, 25};
-//   Pin p1_26 = {LPC_GPIO1, 26};
-//
-//   Lamp the_blinker(p1_25, false, false);
-//   Lamp the_inverted_blinker(p1_26, false, true);
+   Lamp the_blinker;
+   Lamp the_inverted_blinker;
+
+   the_blinker.port = LPC_GPIO1;
+   the_blinker.pin = 25;
+   the_inverted_blinker.port = LPC_GPIO1;
+   the_inverted_blinker.pin = 26;
+   LPC_SC->PCONP      |= (1 << 15); // power up GPIO
 
    SysTick_Init();
 
+
+   Lamp_ON( &the_blinker );
    while (1)
    {
-//      the_blinker.toggle();
-//      systick.wait_ms(100);
-//      the_blinker.toggle();
-//      the_inverted_blinker.toggle();
-//      systick.wait_ms(100);
+      Lamp_Toggle( &the_blinker );
+      Lamp_Toggle( &the_inverted_blinker );
+      SysTick_Waitms(100);
+      Lamp_Toggle( &the_blinker );
+      Lamp_Toggle( &the_inverted_blinker );
+      SysTick_Waitms(100);
    }
    return(0);
 } /* main */
