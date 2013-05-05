@@ -35,5 +35,5 @@ If you are using Linux ( as we use Ubutu 11.04 ) additional action is required t
    4. reload udev rules by: sudo udevadm trigger
    
 ######################################################################################################     
-    Setup of eclipse(optional):
+    Setup of eclipse(optional): TODO
 
