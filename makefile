@@ -23,7 +23,7 @@ help:
 TCHAIN_PREFIX = arm-none-eabi-
 CC      = $(TCHAIN_PREFIX)gcc
 CPP     = $(TCHAIN_PREFIX)g++
-LD      = $(TCHAIN_PREFIX)gcc
+LD      = $(TCHAIN_PREFIX)ld
 AR      = $(TCHAIN_PREFIX)ar
 AS      = $(TCHAIN_PREFIX)as
 OBJCOPY = $(TCHAIN_PREFIX)objcopy

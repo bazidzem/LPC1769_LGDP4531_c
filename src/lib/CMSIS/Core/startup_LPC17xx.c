@@ -48,9 +48,6 @@
 /* use isr specific assembly instructions */
 #define ISR __attribute__((__interrupt__))
 
-/* make this function a reset handler (place at start of text) */
-#define RESET __attribute__((section(".reset_handler")))
-
 
 /******************************************************************************
  *
@@ -60,16 +57,16 @@
 void WEAK           Default_Handler(void);               /* User cat implement his own Default_Handler*/
 
 /* System exception vector handler */
-void WEAK ISR RESET Reset_Handler(void);                 /* Reset Handler */
-void WEAK ISR       NMI_Handler(void);                   /* NMI Handler */
-void WEAK ISR       HardFault_Handler(void);             /* Hard Fault Handler */
-void WEAK ISR       MemManage_Handler(void);             /* MPU Fault Handler */
-void WEAK ISR       BusFault_Handler(void);              /* Bus Fault Handler */
-void WEAK ISR       UsageFault_Handler(void);            /* Usage Fault Handler */
-void WEAK ISR       SVC_Handler(void);                   /* SVCall Handler */
-void WEAK ISR       DebugMon_Handler(void);              /* Debug Monitor Handler */
-void WEAK ISR       PendSV_Handler(void);                /* PendSV Handler */
-void WEAK ISR       SysTick_Handler(void);               /* SysTick Handler */
+void WEAK ISR Reset_Handler(void);                 /* Reset Handler */
+void WEAK ISR NMI_Handler(void);                   /* NMI Handler */
+void WEAK ISR HardFault_Handler(void);             /* Hard Fault Handler */
+void WEAK ISR MemManage_Handler(void);             /* MPU Fault Handler */
+void WEAK ISR BusFault_Handler(void);              /* Bus Fault Handler */
+void WEAK ISR UsageFault_Handler(void);            /* Usage Fault Handler */
+void WEAK ISR SVC_Handler(void);                   /* SVCall Handler */
+void WEAK ISR DebugMon_Handler(void);              /* Debug Monitor Handler */
+void WEAK ISR PendSV_Handler(void);                /* PendSV Handler */
+void WEAK ISR SysTick_Handler(void);               /* SysTick Handler */
 
 
 /* External interrupt vector handler */
@@ -144,12 +141,10 @@ extern int main(void);
 * 0x0000.0000.
 *
 ******************************************************************************/
-/*
- * The Cortex-M3 interrupt controller (NVIC) will need stack address before
- * it can jump to the handler. Hence, it's put as the first thing on the interrupt table
- */
-__attribute__((section(".stack_address")))
-unsigned long *stackaddr = &_stack;
+#define STACK_SIZE                              0x00000200
+
+__attribute__ ((section(".stack")))
+/* static */ unsigned long pulStack[STACK_SIZE];
 
 /*
  * Interrupt function addresses sorted by Exception number
@@ -157,14 +152,22 @@ unsigned long *stackaddr = &_stack;
 __attribute__ ((section(".isr_vector")))
 void (* const g_pfnVectors[])(void) =
 {
-//        (void (*)(void))&_stack,  		/* The initial stack pointer */
+        /*
+         * The Cortex-M3 interrupt controller (NVIC) will need stack address before
+         * it can jump to the handler. Hence, it’s put as the first thing on the interrupt table
+         *
+         * Interrupt function addresses sorted by Exception number
+         *
+         */
+        //(irqfct)(&_stack),        /* 0  - The initial stack pointer */
+        (void (*)(void))((unsigned long)pulStack + sizeof(pulStack)),  // The initial stack pointer
         Reset_Handler,                  /* 1  - Reset Handler */
 		NMI_Handler,                    /* 2  - NMI Handler */
 		HardFault_Handler,              /* 3  - Hard Fault Handler */
 		MemManage_Handler,              /* 4  - MPU Fault Handler */
 		BusFault_Handler,               /* 5  - Bus Fault Handler */
 		UsageFault_Handler,             /* 6  - Usage Fault Handler */
-		0,                              /* 7  - User Code Checksum TODO: check how to implement */
+        0,                              /* 7  - Reserved */
 		0,                              /* 8  - Reserved */
 		0,                              /* 9  - Reserved */
 		0,                              /* 10 - Reserved */
@@ -211,6 +214,59 @@ void (* const g_pfnVectors[])(void) =
 		USBActivity_IRQHandler,         /* 49 - USB Activity */
 		CANActivity_IRQHandler          /* 50 - CAN Activity */
 };
+
+//*****************************************************************************
+//
+// Provide weak aliases for each Exception handler to the Default_Handler.
+// As they are weak aliases, any function with the same name will override
+// this definition.
+//
+//*****************************************************************************
+#pragma weak MemManage_Handler = Default_Handler          /* MPU Fault Handler */
+#pragma weak BusFault_Handler = Default_Handler           /* Bus Fault Handler */
+#pragma weak UsageFault_Handler = Default_Handler         /* Usage Fault Handler */
+#pragma weak SVC_Handler = Default_Handler                /* SVCall Handler */
+#pragma weak DebugMon_Handler = Default_Handler           /* Debug Monitor Handler */
+#pragma weak PendSV_Handler = Default_Handler             /* PendSV Handler */
+#pragma weak SysTick_Handler = Default_Handler            /* SysTick Handler */
+
+/* External interrupt vector handler */
+#pragma weak WDT_IRQHandler = Default_Handler            /* Watchdog Timer */
+#pragma weak TIMER0_IRQHandler = Default_Handler         /* Timer0 */
+#pragma weak TIMER1_IRQHandler = Default_Handler         /* Timer1 */
+#pragma weak TIMER2_IRQHandler = Default_Handler         /* Timer2 */
+#pragma weak TIMER3_IRQHandler = Default_Handler         /* Timer3 */
+#pragma weak UART0_IRQHandler = Default_Handler          /* UART0 */
+#pragma weak UART1_IRQHandler = Default_Handler          /* UART1 */
+#pragma weak UART2_IRQHandler = Default_Handler          /* UART2 */
+#pragma weak UART3_IRQHandler = Default_Handler          /* UART3 */
+#pragma weak PWM1_IRQHandler = Default_Handler           /* PWM1 */
+#pragma weak I2C0_IRQHandler = Default_Handler           /* I2C0 */
+#pragma weak I2C1_IRQHandler = Default_Handler           /* I2C1 */
+#pragma weak I2C2_IRQHandler = Default_Handler           /* I2C2 */
+#pragma weak SPI_IRQHandler = Default_Handler            /* SPI */
+#pragma weak SSP0_IRQHandler = Default_Handler           /* SSP0 */
+#pragma weak SSP1_IRQHandler = Default_Handler           /* SSP1 */
+#pragma weak PLL0_IRQHandler = Default_Handler           /* PLL0 (Main PLL) */
+#pragma weak RTC_IRQHandler = Default_Handler            /* Real Time Clock */
+#pragma weak EINT0_IRQHandler = Default_Handler          /* External Interrupt 0 */
+#pragma weak EINT1_IRQHandler = Default_Handler          /* External Interrupt 1 */
+#pragma weak EINT2_IRQHandler = Default_Handler          /* External Interrupt 2 */
+#pragma weak EINT3_IRQHandler = Default_Handler          /* External Interrupt 3 */
+#pragma weak ADC_IRQHandler = Default_Handler            /* A/D Converter */
+#pragma weak BOD_IRQHandler = Default_Handler            /* Brown Out Detect */
+#pragma weak USB_IRQHandler = Default_Handler            /* USB */
+#pragma weak CAN_IRQHandler = Default_Handler            /* CAN */
+#pragma weak DMA_IRQHandler = Default_Handler            /* GP DMA */
+#pragma weak I2S_IRQHandler = Default_Handler            /* I2S */
+#pragma weak ENET_IRQHandler = Default_Handler           /* Ethernet */
+#pragma weak RIT_IRQHandler = Default_Handler            /* Repetitive Interrupt Timer */
+#pragma weak MCPWM_IRQHandler = Default_Handler          /* Motor Control PWM */
+#pragma weak QEI_IRQHandler = Default_Handler            /* Quadrature Encoder Interface */
+#pragma weak PLL1_IRQHandler = Default_Handler           /* PLL1 (USB PLL) */
+#pragma weak USBActivity_IRQHandler = Default_Handler    /* USB Activity */
+#pragma weak CANActivity_IRQHandler = Default_Handler    /* CAN Activity */
+
 
 /*******************************************************************************
 * Function Name  : Reset_Handler
@@ -269,49 +325,7 @@ void Default_Handler(void)
 {
    /* Go into an infinite loop */
    while (1)
-   {}
-}
+   {
 
-void NMI_Handler(void)            { Default_Handler(); }
-void HardFault_Handler(void)      { Default_Handler(); }
-void MemManage_Handler(void)      { Default_Handler(); }
-void BusFault_Handler(void)       { Default_Handler(); }
-void UsageFault_Handler(void)     { Default_Handler(); }
-void SVC_Handler(void)            { Default_Handler(); }
-void DebugMon_Handler(void)       { Default_Handler(); }
-void PendSV_Handler(void)         { Default_Handler(); }
-void WDT_IRQHandler(void)         { Default_Handler(); }
-void TIMER0_IRQHandler(void)      { Default_Handler(); }
-void TIMER1_IRQHandler(void)      { Default_Handler(); }
-void TIMER2_IRQHandler(void)      { Default_Handler(); }
-void TIMER3_IRQHandler(void)      { Default_Handler(); }
-void UART0_IRQHandler(void)       { Default_Handler(); }
-void UART1_IRQHandler(void)       { Default_Handler(); }
-void UART2_IRQHandler(void)       { Default_Handler(); }
-void UART3_IRQHandler(void)       { Default_Handler(); }
-void PWM1_IRQHandler(void)        { Default_Handler(); }
-void I2C0_IRQHandler(void)        { Default_Handler(); }
-void I2C1_IRQHandler(void)        { Default_Handler(); }
-void I2C2_IRQHandler(void)        { Default_Handler(); }
-void SPI_IRQHandler(void)         { Default_Handler(); }
-void SSP0_IRQHandler(void)        { Default_Handler(); }
-void SSP1_IRQHandler(void)        { Default_Handler(); }
-void PLL0_IRQHandler(void)        { Default_Handler(); }
-void RTC_IRQHandler(void)         { Default_Handler(); }
-void EINT0_IRQHandler(void)       { Default_Handler(); }
-void EINT1_IRQHandler(void)       { Default_Handler(); }
-void EINT2_IRQHandler(void)       { Default_Handler(); }
-void EINT3_IRQHandler(void)       { Default_Handler(); }
-void ADC_IRQHandler(void)         { Default_Handler(); }
-void BOD_IRQHandler(void)         { Default_Handler(); }
-void USB_IRQHandler(void)         { Default_Handler(); }
-void CAN_IRQHandler(void)         { Default_Handler(); }
-void DMA_IRQHandler(void)         { Default_Handler(); }
-void I2S_IRQHandler(void)         { Default_Handler(); }
-void ENET_IRQHandler(void)        { Default_Handler(); }
-void RIT_IRQHandler(void)         { Default_Handler(); }
-void MCPWM_IRQHandler(void)       { Default_Handler(); }
-void QEI_IRQHandler(void)         { Default_Handler(); }
-void PLL1_IRQHandler(void)        { Default_Handler(); }
-void USBActivity_IRQHandler(void) { Default_Handler(); }
-void CANActivity_IRQHandler(void) { Default_Handler(); }
+   }
+}

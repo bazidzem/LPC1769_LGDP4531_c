@@ -35,7 +35,6 @@ DEPGEN = -MD -MP -MF $(*F).tmp
 #                                  # directive to the source or pass the '-mthumb' option directly to the assembler
 #                                  # by prefixin gi twit '-Wa'
 # -gdwarf-2                        # Debugging format
-# -mhard-float                     # allows generation of floating-point instructions and uses FPU-specific calling conventions
 # -O2                              # Optimalization level
 # -fpromote-loop-indices           # Convert loop indices to word-sized quantities
 # -Wall -Wextra                    # Turn all optional warnings plus extra optional
@@ -51,7 +50,6 @@ C_COMMONFLAGS = \
                 -gdwarf-2 \
                 -O0 \
                 -fpromote-loop-indices \
-                -msoft-float \
                 -Wall \
                 -Wextra \
                 -Wimplicit \
@@ -61,9 +59,7 @@ C_COMMONFLAGS = \
                 -Wshadow \
                 -Wcast-qual \
                 -Wcast-align \
-                -fno-exceptions \
-                -mfloat-abi=soft \
-                -Wfatal-errors
+                -fno-exceptions 
 
 # C only compiler flags
 # -Wnested-externs                 # Warn if an extern declaration is encountered within a function
@@ -76,7 +72,6 @@ CFLAGS = \
 # C++ only compiler flags
 # -fno-rtti -fno-exceptions        # If you will not use virtual functions 
 #                                  # those setting flags will optimalize the code
-# -World-style-cast                # Warn if an old-style (C-style) cast to a non-void type is used within a C++ program
 CPPFLAGS = \
            $(C_COMMONFLAGS) \
            -fno-rtti 
@@ -101,20 +96,10 @@ ASFLAGS = \
           -gdwarf-2 
 
 # Linker flags
-# --warn-common                    # Warn when a common symbol is combined with another common
-#                                  # symbol or with a symbol definition.
-# --warn-constructors              # Warn if any global constructors are used.
-# --warn-section-align             # Warn if the address of an output section is changed
-#                                  # because of alignment.
-# --warn-shared-textrel            # Warn if the linker adds a DT TEXTREL to a shared object.
-# --warn-alternate-em              # Warn if an object has alternate ELF machine code.
-# -nostartfiles                    # Do not use the standard system startup files when linking
 # -Wl                              # pass to the linker, -Map -create map file,
 # --cref                           # Output a cross reference table,
 # --gc-sections                    # Enable garbage collection of unused input sections
 # -T$(LINKERSCRIPT)                # Use this linker script
-LDFLAGS = -mcpu=cortex-m3 \
-          -mthumb \
-          -Wl,-Map=$(OUTDIR)/$(TARGET).map,--cref,--gc-sections,-lc,-lgcc,-lstdc++,-lcs3,-lcs3unhosted,-lcs3arm \
+LDFLAGS = -Map=$(OUTDIR)/$(TARGET).map --cref --gc-sections  \
           -T$(LINKERSCRIPT)
 

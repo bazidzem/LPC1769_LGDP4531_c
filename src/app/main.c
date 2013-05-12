@@ -69,12 +69,13 @@ int main(void)
    Lamp_ON( &the_blinker );
    while (1)
    {
-      Lamp_Toggle( &the_blinker );
-      Lamp_Toggle( &the_inverted_blinker );
-      SysTick_Waitms(100);
-      Lamp_Toggle( &the_blinker );
-      Lamp_Toggle( &the_inverted_blinker );
-      SysTick_Waitms(100);
+      //Lamp_Toggle( &the_blinker );
+      //Lamp_Toggle( &the_inverted_blinker );
+      //SysTick_Waitms(100);
+      //Lamp_Toggle( &the_blinker );
+      //Lamp_Toggle( &the_inverted_blinker );
+      //SysTick_Waitms(100);
+	   Lamp_ON( &the_blinker );
    }
    return(0);
 } /* main */
