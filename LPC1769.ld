@@ -4,7 +4,7 @@
  * Dawid Bazan <dawidbazan@gmail.com>
  * Dariusz Synowiec <devemouse@gmail.com>
  * 
- * Last update on May 2011
+ * Last update on May 2013
  */
 
 
@@ -13,6 +13,9 @@
  * to use for the output file. Describes how many bit machine and what kind of endianess it is
  */
 OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm", "elf32-littlearm")
+
+/* The first instruction to execute in a program */
+/*ENTRY(Reset_Handler)*/
 
 /* MPU - defining regions of memory */
 MEMORY
@@ -42,27 +45,16 @@ SECTIONS
   /* This section holds the text, or executable instructions, of a program */
   . = ORIGIN(rom);
 
-  .stack_address :
-  {
-     *(*.stack_address .stack_address*)
-  } >rom
-
   .isr_vector :
   {
     KEEP(*(*.isr_vector .isr_vector.*))
   } >rom
 
-  /* ENTRY is by default base address of .text section */
   .text :
   {
     /* CREATE_OBJECT_SYMBOLS - The command tells the linker to create a symbol for each input file */
     CREATE_OBJECT_SYMBOLS
-    /* 
-     * KEEP the interrupt vector section: When link-time garbage collection is in use ("--gc-sections"), 
-     * it is often useful to mark sections that should not be eliminated
-     */
-    KEEP(*(*.reset_handler .reset_handler.*))
-   
+
     /* ROM sections */
     *(.rom)
     *(.rom.b)
@@ -155,7 +147,6 @@ SECTIONS
     KEEP (*(.fini_array))
     KEEP (*(SORT(.fini_array.*)))
     __fini_array_end = .;
-
 
     /* Set the location counter to the next 4 aligned boundary */
     . = ALIGN(4);
@@ -307,21 +298,36 @@ SECTIONS
     /* Provide to the code the end of RAM address where italized data is stored */
     _ebss = .;
     PROVIDE(ebss = .);
-    _end = .;
-  } >ram1
+    
+    /* 
+     * >ram1 AT>rom - the VMA(Virtual Memory Address) is in ram1, the LMA(Load Memory Address) is in rom
+     * This feature is designed to make it easy to build a ROM image 
+     */
+  } >ram1 AT>rom
    
    
-  /* Start of heap section */
-  .heap (NOLOAD) :
+  /* Start of heap section only for C++ */
+  .heap (NOLOAD):
   {
     *(.heap)
   } >ram1
    
 
+  /* Stack section */
+  /* Define stack size */
+  /*STACK_SIZE = 0x200;*/
+  /*. = ORIGIN(ram1) + LENGTH(ram1) - STACK_SIZE;*/
+  /*. = 0x10007E00;*/
+  .stack (NOLOAD):
+  {
+    /* stack */
+    *(.stack)
+          
+    /* Provide stack end address */
+    _estack = ORIGIN(ram1) + LENGTH(ram1);
+    PROVIDE(estack = ORIGIN(ram1) + LENGTH(ram1));
+  } >ram1
 
-  
-  _estack = ORIGIN(ram1) + LENGTH(ram1) - 16;
-  /*PROVIDE(estack = ORIGIN(ram1) + LENGTH(ram1) - 16);*/
 
   /* These section hold initialized data that contribute to the program's memory image */
   . = ORIGIN(ram2);

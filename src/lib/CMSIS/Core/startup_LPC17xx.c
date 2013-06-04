@@ -117,7 +117,7 @@ extern unsigned long _edata;      /* end address for the .data section. defined 
 extern unsigned long _sbss;       /* start address for the .bss section. defined in linker script */
 extern unsigned long _ebss;       /* end address for the .bss section. defined in linker script */
 
-extern unsigned long _stack;      /* init address for the stack pointer. defined in linker script */
+extern unsigned long _estack;     /* init address for the stack pointer. defined in linker script */
 
 extern unsigned long _sifastcode; /* start address for the rom code instructions copied to .fastcode section. defined in linker script */
 extern unsigned long _sfastcode;  /* start address for the .fastcode section. defined in linker script */
@@ -141,10 +141,10 @@ extern int main(void);
 * 0x0000.0000.
 *
 ******************************************************************************/
-#define STACK_SIZE                              0x00000200
+#define STACK_SIZE_BYTES	512
 
 __attribute__ ((section(".stack")))
-/* static */ unsigned long pulStack[STACK_SIZE];
+/* static */ unsigned long pulStack[((STACK_SIZE_BYTES)/sizeof(unsigned long))];
 
 /*
  * Interrupt function addresses sorted by Exception number
@@ -160,7 +160,7 @@ void (* const g_pfnVectors[])(void) =
          *
          */
         //(irqfct)(&_stack),        /* 0  - The initial stack pointer */
-        (void (*)(void))((unsigned long)pulStack + sizeof(pulStack)),  // The initial stack pointer
+        (void (*)(void))((unsigned long)pulStack + sizeof(pulStack)),  /* 0  - The initial stack pointer */
         Reset_Handler,                  /* 1  - Reset Handler */
 		NMI_Handler,                    /* 2  - NMI Handler */
 		HardFault_Handler,              /* 3  - Hard Fault Handler */

@@ -214,23 +214,17 @@ OOCD_FLASH = -c init
 OOCD_FLASH += -c targets
 
 # Reset and Initialize the target
-OOCD_FLASH+= -c "reset init"
+OOCD_FLASH += -c "reset init"
 
-# Set up JTAG frequency. The openocd config file set up the default frequence, here it will be overwirtten
-OOCD_SETUP += -c "jtag_khz 1200"
-
-# Flash and verify
-# TODO: Do we need to erase mem every time we flash? Prepare 512k flash file and perform time measurements for reference
-# TODO: DO we need to verify? 
-#OOCD_FLASH+=-c "flash write_image erase $(OOCD_LOADFILE)" -c " verify_image $(OOCD_LOADFILE)"
-OOCD_FLASH += -c "flash write_image erase $(OOCD_LOADFILE)"
+# Flash
+OOCD_FLASH += -c "flash write_image erase  $(OOCD_LOADFILE)"
 
 # Let the target run
 OOCD_FLASH += -c "reset run"
 
 # Shut down the session (make flash only used to flash the target, 
 # for debug use commandline or/and external tools like for e.g. eclipse)
-OOCD_FLASH += -c "shutdown"
+OOCD_FLASH += -c shutdown
 
 ###########################################################################
 # Include all dependences
