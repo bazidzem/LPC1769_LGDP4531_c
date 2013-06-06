@@ -24,6 +24,10 @@ if [ -d "/usr/lib/" ]; then
   PATH="/usr/lib/:$PATH"
 fi    
    - then after libftdi and libusb is installed you can install openocd but remember to configure with option "./configure --enable-ft2232_libftdi"
+     openocd 7.0 , you must first configure with correct options:
+      ./configure --enable-ft2232_libftdi --disable-werror
+      make
+      make install
 
 ######################################################################################################
 If you are using Linux ( as we use Ubutu 11.04 ) additional action is required to get the access to USB (no needed for root)

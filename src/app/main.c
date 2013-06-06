@@ -54,25 +54,25 @@ int main(void)
 {
    enableCLKOUT();
 
-#if 0
+
    Lamp the_blinker;
-   Lamp the_inverted_blinker;
+   //Lamp the_inverted_blinker;
 
    the_blinker.port = LPC_GPIO1;
    the_blinker.pin = 25;
-   the_inverted_blinker.port = LPC_GPIO1;
-   the_inverted_blinker.pin = 26;
+   //the_inverted_blinker.port = LPC_GPIO1;
+   //the_inverted_blinker.pin = 26;
    LPC_SC->PCONP      |= (1 << 15); // power up GPIO
-#endif
-   //SysTick_Init();
+
+   SysTick_Init();
 
 
-   //Lamp_ON( &the_blinker );
+   Lamp_ON( &the_blinker );
    while (1)
    {
-      //Lamp_Toggle( &the_blinker );
+      Lamp_Toggle( &the_blinker );
       //Lamp_Toggle( &the_inverted_blinker );
-      //SysTick_Waitms(100);
+      SysTick_Waitms(100);
       //Lamp_Toggle( &the_blinker );
       //Lamp_Toggle( &the_inverted_blinker );
       //SysTick_Waitms(100);

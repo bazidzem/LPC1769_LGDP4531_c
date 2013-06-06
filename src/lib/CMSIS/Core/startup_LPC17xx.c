@@ -323,6 +323,7 @@ void Reset_Handler(void)
  *******************************************************************************/
 void Default_Handler(void)
 {
+	__set_MSP(0x00000004);
    /* Go into an infinite loop */
    while (1)
    {
