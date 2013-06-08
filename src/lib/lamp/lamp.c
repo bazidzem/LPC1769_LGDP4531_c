@@ -7,7 +7,7 @@
  */
 uint8_t Lamp_IsON( Lamp *lamp )
 {
-	return lamp->port->FIOSET;
+	return ((lamp->port->FIOSET & (1 << lamp->pin)) > 0);
 }
 
 /**

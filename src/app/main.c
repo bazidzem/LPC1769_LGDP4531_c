@@ -44,6 +44,7 @@ void enableCLKOUT(void)
    LPC_PINCON->PINSEL3   = 0x00400000; // set pin as CLKOUT
 }
 
+
 /**************************************************************************//**
  * main
  * Function from which everything starts...
@@ -52,30 +53,43 @@ void enableCLKOUT(void)
  *****************************************************************************/
 int main(void)
 {
-   enableCLKOUT();
+   //enableCLKOUT();
 
 
-   Lamp the_blinker;
-   //Lamp the_inverted_blinker;
+   static Lamp the_blinker;
+   static Lamp the_inverted_blinker;
+
+   static uint8_t lampStat = 0;
+
+
 
    the_blinker.port = LPC_GPIO1;
    the_blinker.pin = 25;
-   LPC_GPIO1->FIODIR_b25 = 1;          // 1 - output
-   //the_inverted_blinker.port = LPC_GPIO1;
-   //the_inverted_blinker.pin = 26;
+
+   the_inverted_blinker.port = LPC_GPIO1;
+   the_inverted_blinker.pin = 26;
+
    LPC_SC->PCONP      |= (1 << 15); // power up GPIO
+   LPC_GPIO1->FIOCLR = 0xFFFFFFFF;
+   LPC_GPIO1->FIODIR_b25 = 1;          // 1 - output
+   LPC_GPIO1->FIODIR_b26 = 1;
 
-  // SysTick_Init();
+
+   SysTick_Init();
 
 
-   Lamp_ON( &the_blinker );
+   Lamp_OFF( &the_blinker );
+   Lamp_ON( &the_inverted_blinker );
    while (1)
    {
       Lamp_Toggle( &the_blinker );
+      Lamp_Toggle( &the_inverted_blinker );
+
+      lampStat = Lamp_IsON(&the_blinker);
 
 
       //Lamp_Toggle( &the_inverted_blinker );
-      //SysTick_Waitms(1);
+     SysTick_Waitms(400);
       //Lamp_Toggle( &the_blinker );
       //Lamp_Toggle( &the_inverted_blinker );
       //SysTick_Waitms(100);
