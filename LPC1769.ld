@@ -15,7 +15,7 @@
 OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm", "elf32-littlearm")
 
 /* The first instruction to execute in a program */
-/*ENTRY(Reset_Handler)*/
+ENTRY(Reset_Handler)
 
 /* MPU - defining regions of memory */
 MEMORY
@@ -37,28 +37,28 @@ MEMORY
 /* Sections memory alignement */
 SECTIONS
 {
-  /* 
-   * '.' is location counter which refers to the current location 
-   * the location counter is incremented by the size of the output section 
-   */
-
+ /* 
+  * '.' is location counter which refers to the current location 
+  * the location counter is incremented by the size of the output section 
+  */
+ 
   /* This section holds the text, or executable instructions, of a program */
   . = ORIGIN(rom);
-
-  .isr_vector :
-  {
-    KEEP(*(*.isr_vector .isr_vector.*))
-  } >rom
-
   .text :
   {
     /* CREATE_OBJECT_SYMBOLS - The command tells the linker to create a symbol for each input file */
     CREATE_OBJECT_SYMBOLS
+  
+    /* 
+     * KEEP the interrupt vector section: When link-time garbage collection is in use ("--gc-sections"), 
+     * it is often useful to mark sections that should not be eliminated
+     */  
+    KEEP(*(*.isr_vector .isr_vector.*))
 
     /* ROM sections */
     *(.rom)
     *(.rom.b)
-    
+      
     /* 
      * The "*" is a wildcard which matches any file name. The expression "*(.text)" 
      * means all ".text" input sections in all input files

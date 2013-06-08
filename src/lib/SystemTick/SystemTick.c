@@ -33,7 +33,7 @@ void SysTick_Waitms( uint32_t delay_ms )
     {
        uint32_t curTicks;
        curTicks = msTicks;
-       while ((msTicks - curTicks) < delay_ms) {}
+       while (( msTicks - curTicks) < delay_ms) {}
     }
 }
 
